@@ -222,7 +222,7 @@ verification_images/
 
 **Example verification output:**
 
-![Verification Example][(https://postimg.cc/example.jpg)](https://i.postimg.cc/2Sx9JLgr/car1-car1120.jpg)
+![Verification Example](https://i.postimg.cc/2Sx9JLgr/car1-car1120.jpg)
 
 *Note: Replace the image URL above with your actual verification image from Postimg after uploading.*
 
