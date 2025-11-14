@@ -28,10 +28,12 @@ Please visit the original repository for more information about the dataset.
 Install dependencies with:
 
 ```bash
-pip install opencv-python tqdm
+pip install opencv-python tqdm pyyaml
 ```
 
 ## 🚀 Usage
+
+### Step 1: Extract Frames and Convert Annotations
 
 1. **Ensure the folder structure is as follows:**
    ```
@@ -45,7 +47,7 @@ pip install opencv-python tqdm
    └── main.py
    ```
 
-2. **Run the script:**
+2. **Run the extraction script:**
    ```bash
    python main.py
    ```
@@ -68,6 +70,24 @@ pip install opencv-python tqdm
        │   └── labels/
        └── ...
    ```
+
+### Step 2: Generate Dataset YAML Files
+
+After extraction, generate YAML configuration files for each video:
+
+```bash
+python generate_yaml.py
+```
+
+### Step 3: Verify the Dataset (Optional but Recommended)
+
+Verify your converted dataset:
+
+```bash
+python verifikasi.py
+```
+
+This will create verification images with bounding boxes drawn on them, saved to `verification_images/` folder.
 
 ## 📁 Output Structure
 
@@ -128,6 +148,102 @@ The script uses `tqdm` to display progress:
 - Progress bar for frame extraction in each video
 - Displays the number of frames processed
 
+## 📄 Generate Dataset YAML Files
+
+After extracting frames, you need to generate `dataset.yaml` files for each video folder. This file is required for YOLO training.
+
+**Usage:**
+
+```bash
+python generate_yaml.py
+```
+
+This script will:
+- ✅ Create `dataset.yaml` in each video folder (e.g., `barbecue/dataset.yaml`)
+- ✅ Automatically configure class names from the dataset
+- ✅ Set up proper paths for YOLO training
+
+**Output structure after generation:**
+```
+dataset/images/
+  ├── barbecue/
+  │   ├── dataset.yaml  ← Generated YAML file
+  │   ├── images/
+  │   └── labels/
+  ├── car1/
+  │   ├── dataset.yaml  ← Generated YAML file
+  │   ├── images/
+  │   └── labels/
+  └── ...
+```
+
+**YAML file content:**
+```yaml
+path: .
+nc: 1
+names:
+  0: fire
+train: images
+val: images
+test: images
+```
+
+## 🔍 Verification
+
+Verify your converted dataset by checking bounding boxes and visualizing annotations:
+
+**Usage:**
+
+```bash
+python verifikasi.py
+```
+
+This script will:
+- ✅ Verify YOLO format annotations (check if coordinates are 0-1)
+- ✅ Validate bounding boxes (check if within image boundaries)
+- ✅ Read class names from `dataset.yaml` files
+- ✅ Create visualization images with bounding boxes
+- ✅ Generate summary report
+
+**Features:**
+- Checks 10 random images per video (configurable)
+- Draws bounding boxes with class names on images
+- Validates YOLO coordinate format
+- Outputs verification images to `verification_images/` folder
+
+**Output:**
+```
+verification_images/
+  ├── barbecue_barbecue000.jpg  (with bounding boxes drawn)
+  ├── barbecue_barbecue321.jpg
+  ├── car1_car1000.jpg
+  └── ...
+```
+
+**Example verification output:**
+
+![Verification Example][(https://postimg.cc/example.jpg)](https://i.postimg.cc/2Sx9JLgr/car1-car1120.jpg)
+
+*Note: Replace the image URL above with your actual verification image from Postimg after uploading.*
+
+**Verification report example:**
+```
+Found 23 video folders
+============================================================
+  barbecue: Checked 10 images, 8 with annotations, 0 errors
+  car1: Checked 10 images, 10 with annotations, 0 errors
+  ...
+============================================================
+Summary:
+  Total videos: 23
+  Total images checked: 230
+  Images with annotations: 180
+  Errors found: 0
+
+✅ All bounding boxes verified successfully!
+  Verification images saved to: verification_images
+```
+
 ## ⚙️ Configuration
 
 You can modify some parameters in the `main()` function:
@@ -137,12 +253,23 @@ dataset_dir = Path('furg-fire-dataset-master')  # Dataset folder
 output_dir = Path('dataset/images')              # Output folder
 ```
 
+For verification, you can modify parameters in `verifikasi.py`:
+
+```python
+dataset_dir = Path('dataset/images')             # Dataset folder
+output_dir = Path('verification_images')         # Verification images output
+num_samples = 10                                 # Number of images to check per video
+visualize = True                                 # Create visualization images
+```
+
 ## 📌 Notes
 
 - All frames from videos will be extracted (including frames without annotations)
 - Frames without annotations will have an empty `.txt` file
 - Video folder names will be converted to lowercase (e.g., `Car1.mp4` → `car1/`)
 - Class ID for fire is `0`
+- Each video folder has its own `dataset.yaml` file for YOLO training
+- Verification script reads class names from `dataset.yaml` files automatically
 
 ## 📄 License
 
