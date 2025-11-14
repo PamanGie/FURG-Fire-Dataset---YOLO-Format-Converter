@@ -224,8 +224,6 @@ verification_images/
 
 ![Verification Example](https://i.postimg.cc/2Sx9JLgr/car1-car1120.jpg)
 
-*Note: Replace the image URL above with your actual verification image from Postimg after uploading.*
-
 **Verification report example:**
 ```
 Found 23 video folders
